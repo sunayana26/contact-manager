@@ -14,6 +14,8 @@ const[contact, setContact] = useState<Contact>({
     email:"",
     phone:""
 })
+const [isSubmitting, setIsSubmitting] = useState(false)
+
 const[errors, setErrors] = useState<Partial<Contact>>({})
 
 const handleChange = (e:React.ChangeEvent<HTMLInputElement>)=>{
@@ -45,15 +47,26 @@ const validate = ()=>{
 
 
 setErrors(newErrors)
+console.log(Object.keys(newErrors).length===0)
 return Object.keys(newErrors).length===0
 }
 
 const handleSubmit = (e:React.FormEvent<HTMLFormElement>) =>{
     e.preventDefault()
+      if (isSubmitting) return
 
     const isValid = validate()
     if(!isValid) return
+     setIsSubmitting(true)
     console.log("Submit data:", contact)
+
+    setContact({
+        name:"",
+        email:"",
+        phone:""
+    })
+    setErrors({})
+     setIsSubmitting(false)
 }
     
 
@@ -64,11 +77,14 @@ const handleSubmit = (e:React.FormEvent<HTMLFormElement>) =>{
             <label>Name</label>
             <input type="text" name="name" value={contact.name} onChange={handleChange
             }/>   {errors.name && <p>{errors.name}</p>}
-            <input type="text" name="email" value={contact.email} onChange={handleChange}/>
+            <input type="text" name="name" value={contact.email} onChange={handleChange}/>
             {errors.email && <p>{errors.email}</p>}
             <input type="text" name="phone" value= {contact.phone} onChange={handleChange}/>
             {errors.phone && <p>{errors.phone}</p>}
-            <button type="submit">Submit</button>
+            <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Submitting..." : "Submit"}
+            </button>
+
             </form>
         </div>
     )
